@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop/*
-      
+
 jobs:
   test-code:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
       - name: build
         run: CI=false npm run build 
       - name: deploy
-        run: netlify deploy -p --auth ${{secrets.QA_AUTH}} --site ${{secrets.SITE_ID}}
+        run: npx netlify deploy --prod --auth QA_AUTH --site SITE_ID
       - name: Test Lint
         run: npm run lint
       - name: Test coverage
