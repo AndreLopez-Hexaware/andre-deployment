@@ -67,7 +67,7 @@ jobs:
         run: CI=false npm run build
 
       - name: deploy to QA env --> Netlify
-        run: netlify deploy --prod --auth ${{ secrets.NETLIFY_TOKEN }} --site ${{ secrets.SITE_ID }}
+        run: netlify deploy --prod --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
 
   PR-Management:
     needs: QA-deploy
@@ -87,4 +87,3 @@ jobs:
         run: gh pr create --base main --head ${{ steps.get-branch.outputs.branch }} --title "Pulling ${{ steps.get-branch.outputs.branch }} into main" --body "Automated PR"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
