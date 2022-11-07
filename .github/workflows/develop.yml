@@ -16,9 +16,9 @@ jobs:
           node-version: "16"
       - name: Install Dependencies
         run: npm install
-      - name: Build
       - name: Set Homepage
         run: npm run setHomepage
+      - name: Build
         run: CI=false npm run build 
       - name: Deploy QA
         run: netlify deploy --prod --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
