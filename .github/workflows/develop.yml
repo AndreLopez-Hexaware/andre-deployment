@@ -17,7 +17,7 @@ jobs:
       - name: Build
         run: CI=false npm run build 
       - name: Deploy QA
-        run: netlify deploy -p --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
+        run: netlify deploy --prod
       - name: Test Lint
         run: npm run lint
       - name: Test coverage
