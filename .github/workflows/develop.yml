@@ -1,50 +1,11 @@
-
-name: Deploy to QA env
-
+name: Test Code
 on:
   pull_request:
   push:
-    branches-ignore:
-      - main
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-#Sets environment var CI to false to prevent error from warnings
-env:
-  CI: false
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
+    branches:
+      - develop/*
 jobs:
-  Validate-Dev-Changes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Test Lint
-        run: npm run lint
-
-      - name: Test coverage
-        run: npm run test
-
-  QA-deploy:
-    needs: Validate-Dev-Changes
+  test-code:
     environment:
       name: QA
     runs-on: ubuntu-latest
@@ -53,37 +14,35 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-
       - name: Install Dependencies
         run: npm install
-
-      - name: Run test
-        run: npm run test
-
       - name: Set Homepage
         run: npm run setHomepage
-
       - name: Build
-        run: CI=false npm run build
-
-      - name: Deploy QA to Netlify
+        run: CI=false npm run build 
+      - name: Deploy QA
         run: netlify deploy --prod --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
+      - name: Test Lint
+        run: npm run lint
+      - name: Test coverage
+        run: npm run test
 
   PR-Management:
-    needs: QA-deploy
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
+      runs-on: ubuntu-latest
+      permissions: write-all
+      steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+          with:
+            node-version: "16"
 
-      - name: Get Branch Name
-        id: get-branch
-        uses: ypicard/get-branch-name-github-action@v1
+        - name: Get Branch Name
+          id: get-branch
+          uses: ypicard/get-branch-name-github-action@v1
 
-      - name: pull-request
-        run: gh pr create --base main --head ${{ steps.get-branch.outputs.branch }} --title "Pulling ${{ steps.get-branch.outputs.branch }} into main" --body "Automated PR"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: pull-request
+          run: gh pr create --base main --head ${{ steps.get-branch.outputs.branch }} --title "Pulling ${{ steps.get-branch.outputs.branch }} into main" --body "Automated PR"
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      
