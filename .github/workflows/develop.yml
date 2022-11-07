@@ -14,10 +14,10 @@ jobs:
           node-version: "16"
       - name: Install Dependencies
         run: npm install
-      - name: build
+      - name: Build
         run: CI=false npm run build 
-      - name: deploy
-        run: npx netlify deploy -p --auth ${{secrets.QA_AUTH}} --site ${{secrets.SITE_ID}}
+      - name: Deploy QA
+        run: netlify deploy -p --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
       - name: Test Lint
         run: npm run lint
       - name: Test coverage
