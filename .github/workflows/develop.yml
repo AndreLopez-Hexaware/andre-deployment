@@ -17,9 +17,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build
+      - name: Set Homepage
+        run: npm run setHomepage
         run: CI=false npm run build 
       - name: Deploy QA
-        run: netlify deploy -p --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
+        run: netlify deploy --prod --auth ${{ secrets.QA_AUTH }} --site ${{ secrets.SITE }}
       - name: Test Lint
         run: npm run lint
       - name: Test coverage
